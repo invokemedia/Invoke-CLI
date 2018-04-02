@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-$ composer global require invokemedia/invoke-cli
+$ composer global require invokemedia/invoke-cli:~1.0
 ```
 ## Docker Boilerplate generator
 
