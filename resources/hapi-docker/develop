@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+# Set environment variables for dev
+export APP_PORT=${APP_PORT:-3000}
+export DYNAMO_PORT=${DYNAMO_PORT:-8000}
+export DB_PORT=${DB_PORT:-3306}
+export DB_ROOT_PASS=${DB_ROOT_PASS:-secret}
+export DB_NAME=${DB_NAME:-homestead}
+export DB_USER=${DB_USER:-homestead}
+export DB_PASS=${DB_PASS:-secret}
+
+# Decide which docker-compose file to use
+COMPOSE_FILE="dev"
+
+# Disable pseudo-TTY allocation for CI (Travis)
+TTY=""
+
+# Change settings for Travis CI
+if [ ! -z "$CI" ]; then
+    COMPOSE_FILE="ci"
+    TTY="-T"
+fi
+
+COMPOSE="docker-compose -f docker-compose.${COMPOSE_FILE}.yml"
+
+# If we pass any arguments...
+if [ $# -gt 0 ];then
+
+    # If "npm" is used, run npm
+    # from our node container
+    if [ "$1" == "npm" ]; then
+        shift 1
+        $COMPOSE run --rm $TTY \
+            -w /app \
+            app \
+            npm "$@"
+
+    # If "gulp" is used, run gulp
+    # from our node container
+    elif [ "$1" == "yarn" ]; then
+        shift 1
+        $COMPOSE run --rm $TTY \
+            -w /app \
+            app \
+            yarn "$@"
+    # Else, pass-thru args to docker-compose
+    else
+        $COMPOSE "$@"
+    fi
+
+else
+    $COMPOSE ps
+fi

@@ -1,0 +1,11 @@
+version: '2'
+services:
+  app:
+    working_dir: /app
+    image: node:9
+    container_name: vue-docker
+    command: yarn run dev
+    environment:
+      HOST: 0.0.0.0
+    volumes:
+     - .:/app

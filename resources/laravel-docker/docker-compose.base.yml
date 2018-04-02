@@ -1,0 +1,23 @@
+version: '2'
+services:
+  app:
+    image: invokedigital/laravel:latest
+    container_name: php-nginx
+    volumes:
+     - .:/var/www/html
+    networks:
+     - app-net
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    volumes:
+     - mysqldata:/var/lib/mysql
+    networks:
+     - app-net
+  redis:
+    image: redis:alpine
+    container_name: redis
+    volumes:
+     - redisdata:/data
+    networks:
+     - app-net

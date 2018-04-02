@@ -1,0 +1,8 @@
+version: '2'
+services:
+  app:
+    extends:
+      file: docker-compose.base.yml
+      service: app
+    ports:
+     - "${APP_PORT}:8080"

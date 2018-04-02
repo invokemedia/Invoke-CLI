@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Set environment variables for dev
+export APP_PORT=${APP_PORT:-80}
+
+# Decide which docker-compose file to use
+COMPOSE_FILE="dev"
+
+# Disable pseudo-TTY allocation for CI (Travis)
+TTY=""
+
+# Change settings for Travis CI
+if [ ! -z "$CI" ]; then
+    COMPOSE_FILE="ci"
+    TTY="-T"
+fi
+
+COMPOSE="docker-compose -f docker-compose.${COMPOSE_FILE}.yml"
+
+# If we pass any arguments...
+if [ $# -gt 0 ];then
+
+    # from our yarn container
+    if [ "$1" == "yarn" ]; then
+        shift 1
+        $COMPOSE run --rm $TTY \
+            -w /app \
+            app \
+            yarn "$@"
+    else
+        $COMPOSE "$@"
+    fi
+
+else
+    $COMPOSE ps
+fi
